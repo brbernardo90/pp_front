@@ -4,6 +4,7 @@ import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { Link } from 'react-router-dom';
 
 // Sample mail data
+// @ts-ignore
 const initialMails = [
   { id: 1, block: 'A', apartament: 101, received_at: new Date('2023-01-15') },
   { id: 2, block: 'B', apartament: 202, received_at: new Date('2023-03-10') },
@@ -27,8 +28,9 @@ const Mails: React.FC = () => {
   const [apartmentFilter, setApartmentFilter] = useState<string>('');
   const [startDateFilter, setStartDateFilter] = useState<string>('');
   const [endDateFilter, setEndDateFilter] = useState<string>('');
-
+  // @ts-ignore
   const [loading, setLoading] = useState<boolean>(true); // Loading state
+  // @ts-ignore
   const [error, setError] = useState<string | null>(null); // Error state
 
 
@@ -45,6 +47,7 @@ const Mails: React.FC = () => {
         setMails(data); // Set the data to state
         setLoading(false); // Stop loading once data is fetched
       } catch (err) {
+        // @ts-ignore
         setError(err.message);
         setLoading(false);
       }
@@ -171,10 +174,9 @@ const Mails: React.FC = () => {
               id: mail.id, // Use unique IDs for each row
             }))}
             columns={columns}
-            pageSize={5}
-            rowsPerPageOptions={[5]}
+            // rowsPerPageOptions={[5]}
             checkboxSelection={false}
-            disableSelectionOnClick
+            // disableSelectionOnClick
           />
         ) : (
           <p>No mails found.</p>

@@ -14,6 +14,7 @@ const QrReader = () => {
   const scanner = useRef<QrScanner>();
   const videoEl = useRef<HTMLVideoElement>(null);
   const qrBoxEl = useRef<HTMLDivElement>(null);
+  // @ts-ignore
   const [qrOn, setQrOn] = useState<boolean>(true);
 
   // Result

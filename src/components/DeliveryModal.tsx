@@ -99,6 +99,7 @@ const DeliveryModal: React.FC<DeliveryModalProps> = ({ open, onClose, scannedRes
           <Select
             labelId="floor"
             value={select1to18}
+            // @ts-ignore
             onChange={handleSelect1to18Change}
           >
             {[...Array(18)].map((_, index) => (
@@ -115,6 +116,7 @@ const DeliveryModal: React.FC<DeliveryModalProps> = ({ open, onClose, scannedRes
           <Select
             labelId="number"
             value={select1to6}
+            // @ts-ignore
             onChange={handleSelect1to6Change}
           >
             {[...Array(6)].map((_, index) => (

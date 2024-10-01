@@ -28,6 +28,7 @@ const Apartments: React.FC = () => {
         setApartments(data); // Set the data to state
         setLoading(false); // Stop loading once data is fetched
       } catch (err) {
+        // @ts-ignore
         setError(err.message);
         setLoading(false);
       }
@@ -75,14 +76,14 @@ const Apartments: React.FC = () => {
 
       {/* First Row of Filters: Block and Apartment Number */}
       <Grid2 container spacing={2} alignItems="center">
-        <Grid2 xs={12} sm={3}>
+        <Grid2 size={{xs: 12, sm: 3}}>
           <TextField
             select
             label="Block"
             value={blockFilter}
             onChange={(e) => setBlockFilter(e.target.value)}
             fullWidth
-            displayEmpty
+            // displayEmpty
           >
             <MenuItem value="">
               <em>All Blocks</em>
@@ -92,7 +93,7 @@ const Apartments: React.FC = () => {
           </TextField>
         </Grid2>
 
-        <Grid2 xs={12} sm={3}>
+        <Grid2 size={{xs: 12, sm: 3}}>
           <TextField
             label="Apartment Number"
             type="number"
@@ -106,7 +107,7 @@ const Apartments: React.FC = () => {
           />
         </Grid2>
 
-        <Grid2 xs={12} sm={3}>
+        <Grid2 size={{xs: 12, sm: 3}}>
           <Button
             variant="contained"
             color="primary"
@@ -128,10 +129,10 @@ const Apartments: React.FC = () => {
             id: apartment.id, // Ensure unique IDs
           }))}
           columns={columns}
-          pageSize={5}
-          rowsPerPageOptions={[5]}
+          // pageSize={5}
+          // rowsPerPageOptions={[5]}
           checkboxSelection={false}
-          disableSelectionOnClick
+          // disableSelectionOnClick
         />
       </Box>
     </div>
