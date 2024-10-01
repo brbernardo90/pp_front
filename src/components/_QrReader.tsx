@@ -1,6 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import DeliveryModal from "./DeliveryModal";
-
 
 // Styles
 import "./QrStyles.css";
@@ -19,8 +17,6 @@ const QrReader = () => {
   // Result
   const [scannedResult, setScannedResult] = useState<string | undefined>("");
 
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-
   // Success
   const onScanSuccess = (result: QrScanner.ScanResult) => {
     // 🖨 Print the "result" to browser console.
@@ -28,7 +24,6 @@ const QrReader = () => {
     // ✅ Handle success.
     // 😎 You can do whatever you want with the scanned result.
     setScannedResult(result?.data);
-    setIsModalOpen(true);
   };
 
   // Fail
@@ -70,11 +65,13 @@ const QrReader = () => {
     };
   }, []);
 
-    // Close modal
-    const handleCloseModal = () => {
-        setScannedResult("")
-        setIsModalOpen(false);
-        };
+  // ❌ If "camera" is not allowed in browser permissions, show an alert.
+  useEffect(() => {
+    if (!qrOn)
+      alert(
+        "Camera is blocked or not accessible. Please allow camera in your browser permissions and Reload."
+      );
+  }, [qrOn]);
 
   return (
     <div className="qr-reader">
@@ -91,8 +88,8 @@ const QrReader = () => {
       </div>
 
       {/* Show Data Result if scan is success */}
-      {scannedResult && (<>
-        {/* <p
+      {scannedResult && (
+        <p
           style={{
             position: "absolute",
             top: 0,
@@ -102,14 +99,7 @@ const QrReader = () => {
           }}
         >
           Scanned Result: {scannedResult}
-        </p> */}
-        {/* Render the imported CustomDialog component */}
-        <DeliveryModal
-            open={isModalOpen}
-            onClose={handleCloseModal}
-            scannedResult={scannedResult}
-          />
-        </>
+        </p>
       )}
     </div>
   );
