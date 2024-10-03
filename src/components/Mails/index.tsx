@@ -2,6 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { TextField, MenuItem, Select, Button, Box, Grid2, Avatar } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { Link } from 'react-router-dom';
+import { CheckCircle, Cancel } from '@mui/icons-material';
+
+const apiDomain = process.env.REACT_APP_API_DOMAIN || 'http://localhost:3000';
+
+console.log(apiDomain)
 
 // Sample mail data
 // @ts-ignore
@@ -19,6 +24,7 @@ interface Mail {
   block: string;
   apartament: number;
   received_at: Date;
+  status: boolean; // New field added to interface for status
 }
 
 const Mails: React.FC = () => {
@@ -28,6 +34,7 @@ const Mails: React.FC = () => {
   const [apartmentFilter, setApartmentFilter] = useState<string>('');
   const [startDateFilter, setStartDateFilter] = useState<string>('');
   const [endDateFilter, setEndDateFilter] = useState<string>('');
+  const [statusFilter, setStatusFilter] = useState<string>(''); // New state for status filter
   // @ts-ignore
   const [loading, setLoading] = useState<boolean>(true); // Loading state
   // @ts-ignore
@@ -38,7 +45,7 @@ const Mails: React.FC = () => {
   useEffect(() => {
     const fetchMails = async () => {
       try {
-        const response = await fetch('https://pp-back.onrender.com/deliveries');
+        const response = await fetch(`${apiDomain}/deliveries`);
         if (!response.ok) {
           throw new Error('Failed to fetch mails');
         }
@@ -69,12 +76,26 @@ const Mails: React.FC = () => {
     const matchesEndDate = endDateFilter
       ? new Date(mail.received_at) <= new Date(endDateFilter)
       : true;
-
-    return matchesBlock && matchesApartment && matchesStartDate && matchesEndDate;
+    const matchesStatus =
+      statusFilter !== ''
+        ? mail.status === (statusFilter === 'true')
+        : true;
+    return matchesBlock && matchesApartment && matchesStartDate && matchesEndDate && matchesStatus;
   });
 
   // Define columns for the DataGrid
   const columns: GridColDef[] = [
+    {
+      field: 'status',
+      headerName: 'Status',
+      width: 100,
+      renderCell: (params) =>
+        params.value ? (
+          <CheckCircle style={{ color: 'green' }} />
+        ) : (
+          <Cancel style={{ color: 'red' }} />
+        ),
+    },
     {
       field: 'block',
       headerName: 'Block',
@@ -102,6 +123,22 @@ const Mails: React.FC = () => {
 
       {/* First Row of Filters: Block and Apartment */}
       <Grid2 container spacing={2} alignItems="center">
+        <Grid2 size={{ xs: 12, sm: 3 }}>
+          <Select
+            label="Status"
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            displayEmpty
+            fullWidth
+          >
+            <MenuItem value="">
+              <em>All Status</em>
+            </MenuItem>
+            <MenuItem value="true">Delivered</MenuItem>
+            <MenuItem value="false">Pending</MenuItem>
+          </Select>
+        </Grid2>
+
         <Grid2 size={{xs: 12, sm: 3}}>
           <Select
             label="Block"
@@ -133,10 +170,11 @@ const Mails: React.FC = () => {
         </Grid2>
 
         {/* Button to Add New Mail */}
-        <Grid2 size={{xs: 12, sm: 3}}>
+        <Grid2 size={{xs: 12, sm: 3}} display="flex" justifyContent="flex-end">
           <Button component={Link} to="/new-mail" variant="contained" color="primary">
-            New
+            Receber
           </Button>
+          
         </Grid2>
       </Grid2>
 
@@ -162,6 +200,14 @@ const Mails: React.FC = () => {
             onChange={(e) => setEndDateFilter(e.target.value)}
             fullWidth
           />
+        </Grid2>
+
+        {/* Button to Add New Mail */}
+        <Grid2 size={{xs: 12, sm: 3}} display="flex" justifyContent="flex-end">
+          <Button component={Link} to="/delivery-extract" variant="contained" color="primary">
+            Entregar
+          </Button>
+          
         </Grid2>
       </Grid2>
 

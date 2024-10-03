@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Box, TextField, MenuItem, Button, Grid2, Avatar } from '@mui/material';
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import { DataGrid, GridColDef, GridRowParams } from '@mui/x-data-grid';
+import { useNavigate } from 'react-router-dom';
+
+const apiDomain = process.env.REACT_APP_API_DOMAIN || 'http://localhost:3000';
 
 // Apartment interface
 interface Apartment {
@@ -11,16 +14,17 @@ interface Apartment {
 
 const Apartments: React.FC = () => {
   const [apartments, setApartments] = useState<Apartment[]>([]); // State to hold the fetched apartments
-  const [blockFilter, setBlockFilter] = useState<string>('');
-  const [numberFilter, setNumberFilter] = useState<string>('');
+  const [blockFilter, setBlockFilter] = useState<string>(''); // Block filter
+  const [numberFilter, setNumberFilter] = useState<string>(''); // Number filter
   const [loading, setLoading] = useState<boolean>(true); // Loading state
   const [error, setError] = useState<string | null>(null); // Error state
+  const navigate = useNavigate(); // To navigate to other pages
 
   // Fetch data from API when the component mounts
   useEffect(() => {
     const fetchApartments = async () => {
       try {
-        const response = await fetch('https://pp-back.onrender.com/apartments');
+        const response = await fetch(`${apiDomain}/apartments`);
         if (!response.ok) {
           throw new Error('Failed to fetch apartments');
         }
@@ -28,7 +32,6 @@ const Apartments: React.FC = () => {
         setApartments(data); // Set the data to state
         setLoading(false); // Stop loading once data is fetched
       } catch (err) {
-        // @ts-ignore
         setError(err.message);
         setLoading(false);
       }
@@ -47,18 +50,23 @@ const Apartments: React.FC = () => {
     return matchesBlock && matchesNumber;
   });
 
+  // Redirect on row click
+  const handleRowClick = (params: GridRowParams) => {
+    navigate(`/apartments/${params.id}`);
+  };
+
   // Define the columns for the DataGrid
   const columns: GridColDef[] = [
     {
-        field: 'block',
-        headerName: 'Block',
-        width: 150,
-        renderCell: (params) => (
-          <Avatar sx={{ bgcolor: params.value === 'A' ? 'blue' : 'green', marginRight: 2 }}>
-            {params.value}
-          </Avatar>
-        ),
-      },
+      field: 'block',
+      headerName: 'Block',
+      width: 150,
+      renderCell: (params) => (
+        <Avatar sx={{ bgcolor: params.value === 'A' ? 'blue' : 'green', marginRight: 2 }}>
+          {params.value}
+        </Avatar>
+      ),
+    },
     { field: 'number', headerName: 'Number', width: 150 },
   ];
 
@@ -76,14 +84,13 @@ const Apartments: React.FC = () => {
 
       {/* First Row of Filters: Block and Apartment Number */}
       <Grid2 container spacing={2} alignItems="center">
-        <Grid2 size={{xs: 12, sm: 3}}>
+        <Grid2 size={{ xs: 12, sm: 3 }}>
           <TextField
             select
             label="Block"
             value={blockFilter}
             onChange={(e) => setBlockFilter(e.target.value)}
             fullWidth
-            // displayEmpty
           >
             <MenuItem value="">
               <em>All Blocks</em>
@@ -93,7 +100,7 @@ const Apartments: React.FC = () => {
           </TextField>
         </Grid2>
 
-        <Grid2 size={{xs: 12, sm: 3}}>
+        <Grid2 size={{ xs: 12, sm: 3 }}>
           <TextField
             label="Apartment Number"
             type="number"
@@ -107,7 +114,7 @@ const Apartments: React.FC = () => {
           />
         </Grid2>
 
-        <Grid2 size={{xs: 12, sm: 3}}>
+        <Grid2 size={{ xs: 12, sm: 3 }}>
           <Button
             variant="contained"
             color="primary"
@@ -117,6 +124,16 @@ const Apartments: React.FC = () => {
             }}
           >
             Reset Filters
+          </Button>
+        </Grid2>
+
+        <Grid2 size={{ xs: 12, sm: 3 }} display="flex" justifyContent="flex-end">
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={() => navigate('/apartments/new')} // Redirect to create apartment page
+          >
+            New Apartment
           </Button>
         </Grid2>
       </Grid2>
@@ -129,10 +146,8 @@ const Apartments: React.FC = () => {
             id: apartment.id, // Ensure unique IDs
           }))}
           columns={columns}
-          // pageSize={5}
-          // rowsPerPageOptions={[5]}
           checkboxSelection={false}
-          // disableSelectionOnClick
+          onRowClick={handleRowClick} // Add this to handle row clicks
         />
       </Box>
     </div>

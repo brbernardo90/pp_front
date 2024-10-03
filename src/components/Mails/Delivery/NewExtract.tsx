@@ -1,27 +1,27 @@
 import React from 'react';
 // Styles
-import "../../App.css";
+import "../../../App.css";
 
 // React
 import { useState } from "react";
 
 // Components
-import QrReader from "../QrReader";
+import QrReader2 from "../../QrReader2";
 
-const NewMail: React.FC = () => {
+const DeliveryNewExtract: React.FC = () => {
   const [openQr, setOpenQr] = useState<boolean>(false);
-  const [openQrname, setOpenQrname] = useState<boolean>(false);
+
   return (
     <div>
       <button onClick={() => setOpenQr(!openQr)}>
         {openQr ? "Close" : "Open"} QR Scanner
       </button>
-      {openQr && <QrReader openQr={openQr} setOpenQr={setOpenQr} />}
+      {openQr && <QrReader2 openQr={openQr} setOpenQr={setOpenQr} />}
     </div>
   );
 }
 
-export default NewMail;
+export default DeliveryNewExtract;
 
 // // Styles
 // import "./App.css";

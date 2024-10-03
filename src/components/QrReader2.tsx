@@ -15,7 +15,7 @@ interface QrReaderProps {
   setOpenQr: (value: boolean) => void;
 }
 
-const QrReader: React.FC<QrReaderProps> = ({ openQr, setOpenQr }) => {
+const QrReader2: React.FC<QrReaderProps> = ({ openQr, setOpenQr }) => {
  
   // QR States
   const scanner = useRef<QrScanner>();
@@ -68,7 +68,7 @@ const QrReader: React.FC<QrReaderProps> = ({ openQr, setOpenQr }) => {
 
       setOpenQr(false)
       // setIsModalOpen(true);
-      navigate("/new2", {
+      navigate("/delivery-validate", {
         state: { scannedResult: result?.data, capturedImage: imageData },
       });
     }
@@ -161,4 +161,4 @@ const QrReader: React.FC<QrReaderProps> = ({ openQr, setOpenQr }) => {
   );
 };
 
-export default QrReader;
+export default QrReader2;
